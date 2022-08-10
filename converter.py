@@ -2,7 +2,7 @@ import pickle
 import pandas as pd
 import streamlit as st
 import numpy as np
-
+import matplotlib
 
 with open('table_last.pickle', 'rb') as f:
     table = pickle.load(f)
