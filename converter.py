@@ -4,7 +4,7 @@ import streamlit as st
 import numpy as np
 import matplotlib
 
-with open('table_last.pickle', 'rb') as f:
+with open('table_old.pickle', 'rb') as f:
     table = pickle.load(f)
 
 
@@ -24,7 +24,7 @@ for crypto in all_crypto:
         if len(filtered) == 1:
             last_price = filtered['last_price'].item()
         else:
-            last_price = -1
+            last_price = np.nan
         crypto_prices.append(last_price)
     result.append(crypto_prices)
 
@@ -32,6 +32,16 @@ usdt_exchanges.insert(0, "Crypto")
 result_df = pd.DataFrame(result, index=range(len(result)), columns=usdt_exchanges)
 result_df = result_df.set_index(['Crypto'])
 result_df = result_df.transpose()
-st.title("Arbitrage table")
-st.dataframe(result_df.style.background_gradient(axis=0), 2000, 2000)
+max_coin_price = result_df.max(axis=0)
+min_coin_price = result_df.min(axis=0)
+price_delta = (max_coin_price - min_coin_price) / min_coin_price
+price_delta_df = pd.DataFrame(price_delta)
+price_delta_df.columns = ['Price delta']
+price_delta_df = price_delta_df.transpose()
+st.title("Максимальный спред по автивам")
+st.dataframe(price_delta_df.style.background_gradient(axis=1), 4000, 100)
+
+result_df = result_df.fillna(-1)
+st.title("Таблица со стоимостью активов на разных биржах")
+st.dataframe(result_df.style.background_gradient(axis=0), 4000, 2000)
 

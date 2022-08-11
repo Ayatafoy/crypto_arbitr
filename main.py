@@ -4,9 +4,11 @@ import time
 cg = CoinGeckoAPI()
 
 coin_ids = []
+coins = cg.get_coins()
+
+# a = cg.get_exchanges_by_id('Binance') # Returns all exchange tickers with volume and trust score
 for coin in cg.get_coins():
     coin_ids.append(coin['id'])
-print(len(coin_ids))
 table = []
 try:
     for i, coin_id in enumerate(coin_ids):
@@ -17,7 +19,7 @@ try:
                 last_price = ticker['last']
                 table.append([coin_id, exchange_name, last_price])
         print(i)
-        time.sleep(2)
+        time.sleep(3)
 except Exception as e:
     print(f'Error: {e}. Num processed: {i}')
 
